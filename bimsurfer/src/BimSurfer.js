@@ -174,6 +174,7 @@ define([/*"./Notifier", "./BimServerModel", "./PreloadQuery", "./BimServerGeomet
 						});                        
                         });
                     } else {
+
                         viewer.on("loaded", function() {
                             resolve(viewer);
                         });

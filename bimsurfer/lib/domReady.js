@@ -8,7 +8,6 @@
   window: false, clearInterval: false, document: false,
   self: false, setInterval: false */
 
-
 define(function () {
     'use strict';
 

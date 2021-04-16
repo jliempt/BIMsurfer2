@@ -173,7 +173,6 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
         self.reset = function(args) {
             if (args.colors) {
                 for (let p of Array.from(self.svg.getElementsByTagName("path"))) {
-                    /*
                     if (p.parentNode.className.baseVal == 'IfcDoor') {
                         // @todo this is mainly for the door arcs, but we need to annotate closed areas and line annotations better in the IfcConvert binary
                         p.style.fill = 'none';
@@ -184,7 +183,6 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
                         }
                     }
                     p.style.stroke = '#222';
-                    */
                 }        
             }
         }
@@ -221,9 +219,7 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
                     }
                     n = n.parentElement;
                 }
-                // Dimensions and storey elevations  are always visible
-                let cls = t.parentElement.className.baseVal
-                var visible = storeyVisible && (cls.includes("Dimension") || cls.includes("IfcBuildingStorey") || !Array.from(t.parentElement.querySelectorAll('path')).some((path) => {
+                var visible = storeyVisible && (t.parentElement.className.baseVal == 'IfcAnnotation' || !Array.from(t.parentElement.querySelectorAll('path')).some((path) => {
                     return testOverlap(t, path)
                 }));
                 t.style.visibility = visible ? 'visible' : 'hidden';
@@ -271,8 +267,6 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
                 var N;
                 if (s.hasAttribute('data-name')) {
                     N = s.getAttribute('data-name')
-                } else if (s.hasAttribute("ifc:name")) {
-                    N = s.getAttribute("ifc:name")
                 } else {
                     N = `storey ${i}`;
                 }

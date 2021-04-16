@@ -1,14 +1,14 @@
 define([
     'module',
-    "bimsurfer/src/BimSurfer",
-    "bimsurfer/src/StaticTreeRenderer",
-    "bimsurfer/src/MetaDataRenderer",
-    "bimsurfer/src/Request",
-    "bimsurfer/src/Utils",
-    "bimsurfer/src/AnnotationRenderer",
-    "bimsurfer/src/Assets",
-    "bimsurfer/src/EventHandler",
-    "bimsurfer/lib/domReady!",
+    "./BimSurfer",
+    "./StaticTreeRenderer",
+    "./MetaDataRenderer",
+    "./Request",
+    "./Utils",
+    "./AnnotationRenderer",
+    "./Assets",
+    "./EventHandler",
+    "../lib/domReady!",
 ],
 function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, AnnotationRenderer, Assets, EventHandler) {
     "use strict";    
@@ -26,6 +26,7 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
             origin = window.location.origin;
         }
         
+        origin = "http://localhost:5000";
        
         var self = this;
             
@@ -47,7 +48,8 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
                 mapped = objectIds.map((id) => {
                     return id.replace(/product-/g, '');
                 }); 
-            } else if (view.engine === 'xeogl') {
+            } 
+            else if (view.engine === 'xeogl') {
                 mapped = objectIds.map(function(id) {
                     // So, there are several options here, id can either be a glTF identifier, in which case
                     // the id is a rfc4122 guid, or an annotation in which case it is a compressed IFC guid.
@@ -57,7 +59,8 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
                         return id.split("#")[1].replace(/product-/g, '');
                     }
                 });
-            } else {
+            } 
+            else {
                 mapped = objectIds;
             }
             return mapped;
@@ -153,6 +156,7 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
         }
 
         this.loadTreeView = function(domNode, part, baseId) {
+    
             var tree = new StaticTreeRenderer({
                 domNode: domNode,
                 withVisibilityToggle: args.withTreeVisibilityToggle
@@ -243,11 +247,12 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
 
                 self.incrementRequestsInProgress();
                 var src = modelPath + (part ? `/${part}`: (baseId || ''));
+                
                 if (args.n_files) {
                     src += "_" + i;
                 }
+
                 var P = bimSurfer.load({src: src}).then(function (model) {
-                    
                     if (bimSurfer.engine === 'xeogl' && !part) {
                     // Really make sure everything is loaded.
                     Utils.Delay(100).then(function() {

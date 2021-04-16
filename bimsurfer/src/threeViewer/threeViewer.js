@@ -21,6 +21,7 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
             antialias: true,
 	    preserveDrawingBuffer: true
         });
+
         var viewerContainer = document.getElementById(cfg.domNode);
 
         var viewAngle = 45;
@@ -122,7 +123,9 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
             ).filter(
                 s => s.split("/").reverse()[0].startsWith("three")
             )[0];
-            draco.setDecoderPath(threePath.substr(0, threePath.lastIndexOf("/") + 1));
+            // draco.setDecoderPath(threePath.substr(0, threePath.lastIndexOf("/") + 1));
+            draco.setDecoderPath("https://unpkg.com/three@0.126.0/examples/js/libs/draco/gltf/");
+
             loader.setDRACOLoader(draco);
             }            
             
