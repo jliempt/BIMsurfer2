@@ -300,6 +300,16 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	}
 
+	this.rotateLeft = function(degrees) {
+		rotateLeft(degrees);
+		this.update();
+	}
+
+	this.rotateUp = function(degrees) {
+		rotateUp(degrees);
+		this.update();
+	}
+
 	var panLeft = function () {
 
 		var v = new THREE.Vector3();
@@ -421,6 +431,16 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		}
 
+	}
+
+	this.dollyIn = function() {
+		dollyIn( getZoomScale() );
+		this.update();
+	}
+
+	this.dollyOut = function() {
+		dollyOut( getZoomScale() );
+		this.update();
 	}
 
 	//

@@ -372,6 +372,14 @@ define([/*"./Notifier", "./BimServerModel", "./PreloadQuery", "./BimServerGeomet
         this.setCamera = function (params) {
             viewer.setCamera(params);
         };
+
+        /**
+         *
+         * @param params
+         */
+        this.setCameraControls = function (params) {
+            viewer.setCameraControls(params);
+        };
 		
 		/**
          * Redefines light sources.

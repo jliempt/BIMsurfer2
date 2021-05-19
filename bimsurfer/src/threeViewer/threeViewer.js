@@ -39,7 +39,7 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
              return false;
         }
         
-        var camera = window.cam = new THREE.PerspectiveCamera(viewAngle, 1, nearClipping, farClipping);
+        var camera = self.camera = window.cam = new THREE.PerspectiveCamera(viewAngle, 1, nearClipping, farClipping);
         
         self.resize = () => {
             var width = viewerContainer.offsetWidth;
@@ -85,7 +85,7 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
         scene.add(light);
         scene.add(new THREE.AmbientLight(0x404050));
 
-        var controls = new THREE.OrbitControls(camera, viewerContainer);
+        var controls = self.controls = new THREE.OrbitControls(camera, viewerContainer);
         controls.addEventListener('change', rerender);
 
         var first = true;
@@ -348,6 +348,40 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
             }]);
         };
 
+        self.setCameraControls = function(params) {
+
+            self.controls.keys = {};
+            this.controls.zoomSpeed = params.zoom;
+
+            document.onkeydown = function(e) {
+                if (e.key == "ArrowLeft") {
+                    self.camera.position.x -= params.pan;
+                    self.controls.target.x -= params.pan;
+                } else if (e.key == "ArrowRight") {
+                    self.camera.position.x += params.pan;
+                    self.controls.target.x += params.pan;
+                } else if (e.key == "ArrowUp") {
+                    self.camera.position.y += params.pan;
+                    self.controls.target.y += params.pan;
+                } else if (e.key == "ArrowDown") {
+                    self.camera.position.y -= params.pan;
+                    self.controls.target.y -= params.pan;
+                } else if (e.key == "w") {
+                    self.controls.rotateUp(Math.PI / params.rotate);
+                } else if (e.key == "a") {
+                    self.controls.rotateLeft(Math.PI / params.rotate);
+                } else if (e.key == "s") {
+                    self.controls.rotateUp(-(Math.PI / params.rotate));
+                } else if (e.key == "d") {
+                    self.controls.rotateLeft(-(Math.PI / params.rotate));
+                }  else if (e.key == "+") {
+                    self.controls.dollyOut();
+                } else if (e.key == "-") {
+                    self.controls.dollyIn();
+                }
+                rerender();
+            }
+        }
         self.setColor = function(params) {
             params.ids.forEach((id) => {
                 const obj = scene.getObjectById(id) || scene.getObjectById(self.nameToId.get(id));
