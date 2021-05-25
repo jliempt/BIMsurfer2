@@ -350,23 +350,12 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
 
         self.setCameraControls = function(params) {
 
-            self.controls.keys = {};
+            this.controls.screenSpacePanning = true;
             this.controls.zoomSpeed = params.zoom;
+            this.controls.keyPanSpeed = params.pan;
 
             document.onkeydown = function(e) {
-                if (e.key == "ArrowLeft") {
-                    self.camera.position.x -= params.pan;
-                    self.controls.target.x -= params.pan;
-                } else if (e.key == "ArrowRight") {
-                    self.camera.position.x += params.pan;
-                    self.controls.target.x += params.pan;
-                } else if (e.key == "ArrowUp") {
-                    self.camera.position.y += params.pan;
-                    self.controls.target.y += params.pan;
-                } else if (e.key == "ArrowDown") {
-                    self.camera.position.y -= params.pan;
-                    self.controls.target.y -= params.pan;
-                } else if (e.key == "w") {
+                if (e.key == "w") {
                     self.controls.rotateUp(Math.PI / params.rotate);
                 } else if (e.key == "a") {
                     self.controls.rotateLeft(Math.PI / params.rotate);
