@@ -130,6 +130,7 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
             }            
             
             loader.load(src + (isIE11 ? ".unoptimized" : "") + ".glb", function(gltf) {
+                    gltf.scene.name = "ifc";
                     scene.add(gltf.scene);
 
                     var createdLines = {};
@@ -177,7 +178,16 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
                     if (first) {
 
                         var boundingBox = new THREE.Box3();
-                        boundingBox.setFromObject(scene);
+
+                        var child;
+                        for (var i = 0; i < scene.children.length; i++) {
+                            if (scene.children[i].name == "ifc") {
+                                child = scene.children[i];
+                                break;
+                            }
+                        }
+                        boundingBox.setFromObject(child);
+
                         var center = new THREE.Vector3();
                         boundingBox.getCenter(center);
                         controls.target = center;
@@ -236,6 +246,36 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
                 function(error) {
                     console.log('An error happened', error);
                 }
+            );
+
+        };
+
+        self.loadShp = function(src, georef) {
+
+            var location = georef.location;
+            var rotation = georef.direction;
+
+            var parsedShp = null;
+            SHPParser.load(src, 
+              function(res) {
+
+                console.log('ok', res);
+                parsedShp = res;
+                var loader = new THREE.SHPLoader();
+                var m = loader.createModel(parsedShp, false);
+
+                var bbox = new THREE.Box3().setFromObject(m);
+                console.log(bbox);
+
+                m.translateX(- location[0]);
+                m.translateY(- location[2]);
+                m.translateZ(location[1]);
+
+                console.log('created model', m);
+                scene.add(m);
+
+              },
+              function(res){ console.log('error', res); }
             );
 
         };

@@ -26,7 +26,7 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
             origin = window.location.origin;
         }
         
-        origin = "http://godzilla.bk.tudelft.nl/geobim-tool/analyse";
+        origin = "http://localhost:5000";
        
         var self = this;
             
@@ -281,6 +281,12 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
             
             return P;
         };
+
+        this.loadShp = function(src, georef) {
+
+            bimSurfer._loadShp(src, georef);
+
+        }
         
         this.setColor = function(args) {
             var viewers = [bimSurfer];
