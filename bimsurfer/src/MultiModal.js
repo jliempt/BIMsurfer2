@@ -241,7 +241,7 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
             return bimSurfer.getSelection().map(id => id.replace(/product-/g, '')).map(Utils.CompressGuid);
         }
         
-        this.load3d = function(part, baseId) {
+        this.load3d = function(georef, part, baseId) {
         
             for(var i = 0; i < n_files; i++) {
 
@@ -252,7 +252,7 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
                     src += "_" + i;
                 }
 
-                var P = bimSurfer.load({src: src}).then(function (model) {
+                var P = bimSurfer.load({src: src, georef: georef}).then(function (model) {
                     if (bimSurfer.engine === 'xeogl' && !part) {
                     // Really make sure everything is loaded.
                     Utils.Delay(100).then(function() {

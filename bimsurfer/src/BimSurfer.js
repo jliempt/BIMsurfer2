@@ -154,7 +154,7 @@ define([/*"./Notifier", "./BimServerModel", "./PreloadQuery", "./BimServerGeomet
                 var maxActiveProcessesEncountered = 0;
                 var oldProgress = 0;
                 return new Promise(function (resolve, reject) {
-                    var m = viewer.loadglTF(params.src);
+                    var m = viewer.loadglTF(params.src, params.georef);
                     
                     if (window.XeoViewer && self.viewer instanceof XeoViewer) {
                         m.on("loaded", function() {						

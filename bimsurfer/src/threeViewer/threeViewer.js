@@ -110,7 +110,7 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
             }
         };
 
-        self.loadglTF = function(src) {
+        self.loadglTF = function(src, georef) {
 
             var loader = new THREE.GLTFLoader();
             
@@ -175,18 +175,27 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
                         }
                     });
 
+                    for (var i = 0; i < scene.children.length; i++) {
+                        if (scene.children[i].name == "ifc") {
+                            var child = scene.children[i];
+                            var location = georef.location;
+                            child.translateX(- location[0] / 1000);
+                            child.translateY(- location[2]);
+                            child.translateZ(location[1] / 1000);
+                            break;
+                        }
+                    }
+
                     if (first) {
 
                         var boundingBox = new THREE.Box3();
 
-                        var child;
                         for (var i = 0; i < scene.children.length; i++) {
                             if (scene.children[i].name == "ifc") {
-                                child = scene.children[i];
+                                boundingBox.setFromObject(scene.children[i]);
                                 break;
                             }
                         }
-                        boundingBox.setFromObject(child);
 
                         var center = new THREE.Vector3();
                         boundingBox.getCenter(center);
