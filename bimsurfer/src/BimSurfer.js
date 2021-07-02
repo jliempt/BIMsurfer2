@@ -183,11 +183,18 @@ define([/*"./Notifier", "./BimServerModel", "./PreloadQuery", "./BimServerGeomet
             }
         };
 
-        this._loadShp = function (src, georef) {
+        this._loadShp = function (src, dbf, georef) {
 
-            viewer.loadShp(src, georef);
+            viewer.loadShp(src, dbf, georef);
 
         }
+
+        this._loadGroup = function (group) {   
+
+            viewer.loadGroup(group);
+
+        }
+
 
         this._loadFromAPI = function (params) {
 

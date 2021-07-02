@@ -26,7 +26,7 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
             origin = window.location.origin;
         }
         
-        origin = "http://localhost:5000";
+        origin = "http://localhost:81";
        
         var self = this;
             
@@ -282,9 +282,15 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
             return P;
         };
 
-        this.loadShp = function(src, georef) {
+        this.loadShp = function(src, dbf, georef) {
 
-            bimSurfer._loadShp(src, georef);
+            bimSurfer._loadShp(src, dbf, georef);
+
+        }
+
+        this.loadGroup = function(group) {
+
+            bimSurfer._loadGroup(group);
 
         }
         

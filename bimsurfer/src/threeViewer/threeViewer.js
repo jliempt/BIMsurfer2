@@ -358,6 +358,13 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
 
         };
 
+        self.loadGroup = function(group) {
+
+            scene.add(group);
+            rerender();
+
+        };
+
         self._updateState = function() {
             var id;
             self.previousMaterials.forEach((val, id, _) => {
