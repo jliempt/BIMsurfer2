@@ -154,16 +154,16 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
                             obj.material.side = THREE.DoubleSide;
                             obj.material.depthWrite = !obj.material.transparent;
 
-                            if (createLines) {
-                                var edges;
-                                if (obj.geometry.id in createdLines) {
-                                    edges = createdLines[obj.geometry.id];
-                                } else {
-                                    edges = createdLines[obj.geometry.id] = new THREE.EdgesGeometry(obj.geometry);
-                                }
-                                var line = new THREE.LineSegments(edges, lineMaterial);
-                                obj.add(line);
-                            }                            
+                            // if (createLines) {
+                            //     var edges;
+                            //     if (obj.geometry.id in createdLines) {
+                            //         edges = createdLines[obj.geometry.id];
+                            //     } else {
+                            //         edges = createdLines[obj.geometry.id] = new THREE.EdgesGeometry(obj.geometry);
+                            //     }
+                            //     var line = new THREE.LineSegments(edges, lineMaterial);
+                            //     obj.add(line);
+                            // }                            
                         }
 
                         if (obj.name.startsWith("product-")) {
@@ -175,16 +175,85 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
                         }
                     });
 
-                    for (var i = 0; i < scene.children.length; i++) {
-                        if (scene.children[i].name == "ifc") {
-                            var child = scene.children[i];
-                            var location = georef.location;
-                            child.translateX(- location[0] / 1000);
-                            child.translateY(- location[2]);
-                            child.translateZ(location[1] / 1000);
-                            break;
+                    // var geometries = [];
+                    // var group = new THREE.Group();
+                    // gltf.scene.traverse((obj) => {
+
+                    //     if ( obj.geometry ) {
+
+                    //     //     geometries.push(obj.geometry.toNonIndexed());
+                    //     //     // console.log(obj.geometry);
+
+                    //     // }
+                    //     obj.updateMatrix();
+                    //     obj.geometry.applyMatrix(obj.matrix);
+                    //     obj.updateMatrix();
+
+                    //     const mat = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+                    //     const mesh = new THREE.Mesh( obj.geometry, mat );
+                    //     // mesh.geometry.applyMatrix(obj.matrix);
+                    //     // mesh.updateMatrix();
+                        
+                    //     group.add(mesh);
+                    //     }
+
+                    // });
+
+                    var geometries = [];
+
+                    gltf.scene.traverse((obj) => {
+
+                        if ( obj.geometry ) {
+                            if (obj.geometry.type != "BufferGeometry") {
+                                console.log(obj.geometry.type);
+                            }
+
+                            obj.updateMatrix();
+                            obj.geometry.applyMatrix(obj.matrix);
+                            obj.position.set(0,0,0);
+                            obj.rotation.set(0,0,0);
+                            obj.scale.set(1,1,1);
+
+                            // obj.updateMatrix();
+
+                            var g = obj.geometry.toNonIndexed();
+
+                            const color = obj.material.color;
+
+                            var colors = [];
+                            for ( var v = 0; v < g.attributes.position.count; v++ ) {
+
+                                colors.push( color.r, color.g, color.b );
+
+                            }
+
+                            g.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+
+                            geometries.push(g.applyMatrix( obj.matrixWorld ));
+
                         }
-                    }
+
+                    });
+
+                    gltf.scene.children = [gltf.scene.children[0]];
+
+                    var geometry = THREE.BufferGeometryUtils.mergeBufferGeometries( geometries );
+                    geometry.computeBoundingSphere();
+                    const matje = new THREE.MeshBasicMaterial({ vertexColors: true });
+                    const mesh = new THREE.Mesh( geometry, matje );
+                    mesh.name = "ifc";
+                    scene.add( mesh );
+
+                    // for (var i = 0; i < scene.children.length; i++) {
+                    //     if (scene.children[i].name == "ifc") {
+                    //         var child = scene.children[i];
+                    //         var location = georef.location;
+                    //         child.translateX(- location[0] / 1000);
+                    //         child.translateY(- location[2]);
+                    //         child.translateZ(location[1] / 1000);
+                    //         break;
+                    //     }
+                    // }
 
                     if (first) {
 
@@ -259,10 +328,10 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
 
         };
 
-        self.loadShp = function(src, georef) {
+        self.loadShp = function(src, dbf, georef) {
 
-            var location = georef.location;
-            var rotation = georef.direction;
+            // var location = georef.location;
+            // var rotation = georef.direction;
 
             var parsedShp = null;
             SHPParser.load(src, 
@@ -276,9 +345,9 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
                 var bbox = new THREE.Box3().setFromObject(m);
                 console.log(bbox);
 
-                m.translateX(- location[0]);
-                m.translateY(- location[2]);
-                m.translateZ(location[1]);
+                // m.translateX(- location[0]);
+                // m.translateY(- location[2]);
+                // m.translateZ(location[1]);
 
                 console.log('created model', m);
                 scene.add(m);
