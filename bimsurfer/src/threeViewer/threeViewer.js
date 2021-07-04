@@ -110,6 +110,72 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
             }
         };
 
+        self.aggregateGeometry = function(geometries, obj) {
+
+            if (obj.name == "product-e4e92e20-663b-4fb8-8d96-6889e59e035d-body" || obj.name == "product-48b6c703-a282-4c9f-8844-40b403747711-body") {
+                console.log(obj);
+            }
+
+            obj.updateMatrix();
+            obj.geometry.applyMatrix(obj.matrix);
+            obj.position.set(0,0,0);
+            obj.rotation.set(0,0,0);
+            obj.scale.set(1,1,1);
+
+            // obj.updateMatrix();
+
+            var g = obj.geometry.toNonIndexed();
+
+            const color = obj.material.color;
+
+            var colors = [];
+            for ( var v = 0; v < g.attributes.position.count; v++ ) {
+
+                colors.push( color.r, color.g, color.b );
+
+            }
+
+            g.computeBoundingBox();
+            
+            
+            // if (g.boundingBox.min.x < - 300) {
+
+            //     console.log(g.boundingBox.min.x);
+                
+            //     console.log(obj);
+            // }
+
+
+            g.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+
+            geometries.push(g.applyMatrix( obj.matrixWorld ));
+
+        }
+
+        self.aggregateGeometries = function( geometries, objs ) {
+
+            objs.traverse((obj) => {
+
+                if ( obj.children.length ) {
+
+                    for (var i = 0; i < obj.children.length; i++) {
+
+                        self.aggregateGeometries( geometries, obj.children[i] );
+
+                    }
+
+                }
+
+                if ( obj.geometry ) {
+
+                    self.aggregateGeometry( geometries, obj );
+
+                }
+
+            });
+
+        }
+
         self.loadglTF = function(src, georef) {
 
             var loader = new THREE.GLTFLoader();
@@ -199,61 +265,28 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
 
                     // });
 
-                    var geometries = [];
+                    // var geometries = [];
+                    // self.aggregateGeometries(geometries, gltf.scene);
 
-                    gltf.scene.traverse((obj) => {
+                    // gltf.scene.children = [gltf.scene.children[0]];
 
-                        if ( obj.geometry ) {
-                            if (obj.geometry.type != "BufferGeometry") {
-                                console.log(obj.geometry.type);
-                            }
+                    // var geometry = THREE.BufferGeometryUtils.mergeBufferGeometries( geometries );
+                    // geometry.computeBoundingSphere();
+                    // const matje = new THREE.MeshBasicMaterial({ vertexColors: true });
+                    // const mesh = new THREE.Mesh( geometry, matje );
+                    // mesh.name = "ifc2";
+                    // scene.add( mesh );
 
-                            obj.updateMatrix();
-                            obj.geometry.applyMatrix(obj.matrix);
-                            obj.position.set(0,0,0);
-                            obj.rotation.set(0,0,0);
-                            obj.scale.set(1,1,1);
-
-                            // obj.updateMatrix();
-
-                            var g = obj.geometry.toNonIndexed();
-
-                            const color = obj.material.color;
-
-                            var colors = [];
-                            for ( var v = 0; v < g.attributes.position.count; v++ ) {
-
-                                colors.push( color.r, color.g, color.b );
-
-                            }
-
-                            g.addAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
-
-                            geometries.push(g.applyMatrix( obj.matrixWorld ));
-
+                    for (var i = 0; i < scene.children.length; i++) {
+                        if (scene.children[i].name == "ifc") {
+                            var child = scene.children[i];
+                            var location = georef.location;
+                            child.translateX(- location[0] / 1000);
+                            child.translateY(- location[2]);
+                            child.translateZ(location[1] / 1000);
+                            break;
                         }
-
-                    });
-
-                    gltf.scene.children = [gltf.scene.children[0]];
-
-                    var geometry = THREE.BufferGeometryUtils.mergeBufferGeometries( geometries );
-                    geometry.computeBoundingSphere();
-                    const matje = new THREE.MeshBasicMaterial({ vertexColors: true });
-                    const mesh = new THREE.Mesh( geometry, matje );
-                    mesh.name = "ifc";
-                    scene.add( mesh );
-
-                    // for (var i = 0; i < scene.children.length; i++) {
-                    //     if (scene.children[i].name == "ifc") {
-                    //         var child = scene.children[i];
-                    //         var location = georef.location;
-                    //         child.translateX(- location[0] / 1000);
-                    //         child.translateY(- location[2]);
-                    //         child.translateZ(location[1] / 1000);
-                    //         break;
-                    //     }
-                    // }
+                    }
 
                     if (first) {
 
