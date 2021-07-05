@@ -176,7 +176,7 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
 
         }
 
-        self.loadglTF = function(src, georef) {
+        self.loadglTF = function(src, georef, test) {
 
             var loader = new THREE.GLTFLoader();
             
@@ -265,26 +265,28 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
 
                     // });
 
-                    // var geometries = [];
-                    // self.aggregateGeometries(geometries, gltf.scene);
+                    if ( test ) {
+                        var geometries = [];
+                        self.aggregateGeometries(geometries, gltf.scene);
 
-                    // gltf.scene.children = [gltf.scene.children[0]];
+                        gltf.scene.children = [gltf.scene.children[0]];
 
-                    // var geometry = THREE.BufferGeometryUtils.mergeBufferGeometries( geometries );
-                    // geometry.computeBoundingSphere();
-                    // const matje = new THREE.MeshBasicMaterial({ vertexColors: true });
-                    // const mesh = new THREE.Mesh( geometry, matje );
-                    // mesh.name = "ifc2";
-                    // scene.add( mesh );
+                        var geometry = THREE.BufferGeometryUtils.mergeBufferGeometries( geometries );
+                        geometry.computeBoundingSphere();
+                        const matje = new THREE.MeshBasicMaterial({ vertexColors: true });
+                        const mesh = new THREE.Mesh( geometry, matje );
+                        mesh.name = "ifc2";
+                        scene.add( mesh );
+                    }
 
                     for (var i = 0; i < scene.children.length; i++) {
-                        if (scene.children[i].name == "ifc") {
+                        if (scene.children[i].name == "ifc" || scene.children[i].name == "ifc2") {
                             var child = scene.children[i];
                             var location = georef.location;
                             child.translateX(- location[0] / 1000);
                             child.translateY(- location[2]);
                             child.translateZ(location[1] / 1000);
-                            break;
+                            
                         }
                     }
 

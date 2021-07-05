@@ -56,7 +56,7 @@ define([/*"./Notifier", "./BimServerModel", "./PreloadQuery", "./BimServerGeomet
          * Loads a model into this BIMSurfer.
          * @param params
          */
-        this.load = function (params) {
+        this.load = function (params, test) {
 
             if (params.test) {
                 viewer.loadRandom(params);
@@ -69,7 +69,7 @@ define([/*"./Notifier", "./BimServerModel", "./PreloadQuery", "./BimServerGeomet
                 return this._loadFromAPI(params);
 
             } else if (params.src && ((window.XeoViewer && self.viewer instanceof XeoViewer) || self.viewer instanceof ThreeViewer)) {
-                return this._loadFrom_glTF(params);
+                return this._loadFrom_glTF(params, test);
             } else if (params.src && self.viewer instanceof SvgViewer) {
                 return this._loadFrom_SVG(params);
             }
@@ -149,12 +149,12 @@ define([/*"./Notifier", "./BimServerModel", "./PreloadQuery", "./BimServerGeomet
             }
         };
 
-        this._loadFrom_glTF = function (params) {
+        this._loadFrom_glTF = function (params, test) {
             if (params.src) {
                 var maxActiveProcessesEncountered = 0;
                 var oldProgress = 0;
                 return new Promise(function (resolve, reject) {
-                    var m = viewer.loadglTF(params.src, params.georef);
+                    var m = viewer.loadglTF(params.src, params.georef, test);
                     
                     if (window.XeoViewer && self.viewer instanceof XeoViewer) {
                         m.on("loaded", function() {						
