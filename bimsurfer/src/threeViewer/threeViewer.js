@@ -400,6 +400,49 @@ define(["../EventHandler", "../Utils"], function(EventHandler, Utils) {
 
         };
 
+        self.loadLine = function(georef) {
+
+            var location = georef.location;
+
+            const lines = [ [ [ 73.331, - 465.347 ], [ 96.352, - 444.517 ] ],
+            [ [ 96.352, - 444.517 ], [ 152.446, - 506.513 ] ],
+            [ [ 152.446, - 506.513 ], [ 129.425, - 527.343 ] ],
+            [ [ 129.425, - 527.343 ], [ 73.331, - 465.347 ] ]
+            ];
+        
+            const col = [0x000000, 0x00ff00, 0x000000, 0xff0000]
+        
+            var c = 0;
+            for ( const [key, line] of Object.entries(lines) ) {
+        
+        
+              var points = [];
+              points.push(new THREE.Vector3( line[0][0], 0, line[0][1]) );
+              points.push(new THREE.Vector3( line[1][0], 0, line[1][1]) );
+        
+              const lineMaterial = new THREE.LineBasicMaterial({
+                color: col[c],
+                linewidth: 2
+              });
+        
+              const lineGeom = new THREE.BufferGeometry().setFromPoints( points );
+              
+              const line2 = new THREE.Line( lineGeom, lineMaterial);
+
+              line2.translateX(- location[0] / 1000);
+              line2.translateY(- location[2]);
+              line2.translateZ(location[1] / 1000);
+
+              scene.add( line2 );
+
+              c += 1;
+        
+            }
+
+            rerender();
+
+        };
+
         self._updateState = function() {
             var id;
             self.previousMaterials.forEach((val, id, _) => {

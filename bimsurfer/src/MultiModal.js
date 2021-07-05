@@ -294,6 +294,12 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
             bimSurfer._loadGroup(group);
 
         }
+
+        this.loadLine = function(georef) {
+
+            bimSurfer._loadLine(georef);
+
+        }
         
         this.setColor = function(args) {
             var viewers = [bimSurfer];

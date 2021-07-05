@@ -195,6 +195,11 @@ define([/*"./Notifier", "./BimServerModel", "./PreloadQuery", "./BimServerGeomet
 
         }
 
+        this._loadLine = function (georef) {   
+
+            viewer.loadLine(georef);
+
+        }
 
         this._loadFromAPI = function (params) {
 
