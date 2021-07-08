@@ -26,8 +26,7 @@ function (cfg, BimSurfer, StaticTreeRenderer, MetaDataRenderer, Request, Utils, 
             origin = window.location.origin;
         }
         
-        // origin = "http://localhost:81";
-        origin = "http://godzilla.bk.tudelft.nl/geobim-tool/analyse/";
+        origin = args.flaskPath;
        
         var self = this;
             
